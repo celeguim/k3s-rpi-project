@@ -3,6 +3,7 @@ ssh celeghin@192.168.1.180 /usr/local/bin/k3s-uninstall.sh; rm -rf /var/lib/ranc
 ssh celeghin@192.168.1.182 /usr/local/bin/k3s-agent-uninstall.sh; rm -rf /var/lib/rancher/; rm -rf /etc/rancher/;
 ssh celeghin@192.168.1.183 /usr/local/bin/k3s-agent-uninstall.sh; rm -rf /var/lib/rancher/; rm -rf /etc/rancher/;
 
+
 ------ Restart
 ssh celeghin@192.168.1.180 sudo systemctl restart k3s
 ssh celeghin@192.168.1.182 sudo systemctl restart k3s-agent
@@ -25,7 +26,6 @@ kubectl get node -o wide
 kubectl get all -n kube-system
 
 
-
 ----- Join nodes
 USER=celeghin
 MASTER=192.168.1.180
@@ -36,6 +36,8 @@ k3sup join --host ${NODE} --user ${USER} --server-host ${MASTER} --k3s-channel s
 
 
 ----- Install Load Balancer MetalLB
+https://metallb.universe.tf/
+
 kubectl apply -f metallb-native-0.13.7.yaml
 
 kubectl get all -n metallb-system

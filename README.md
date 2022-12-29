@@ -8,7 +8,7 @@ The k3s cluster will have a load balancer (MetalLB) and ingress controller (NGIN
 
 Bare metal setup
 
-<img style="text-align: center; display: block;" src="images/devices.png" alt="drawing" width="400" />
+<center><img style="text-align:center;display:block;" src="images/devices.png" width="400" /></center>
 
 | role   |      ip       |   user   |           device | cpu | mem |        proc |
 | :----- | :-----------: | :------: | ---------------: | :-: | :-: | ----------: |
@@ -28,9 +28,9 @@ Bare metal setup
 
 ## K3s installation
 
-As we don't want to have the default integrated traefik, but instead we want to have MetalLB as load balancer and NGINX as ingress controller, so we must disable it on the installation, like:
+### create master
 
-- Just wait a bit and your cluster will be kicking up, at this point you just have the master
+As we don't want to have the default integrated traefik, but instead we want to have MetalLB as load balancer and NGINX as ingress controller, so we must disable it on the installation, like:
 
 ```
 USER=celeghin
@@ -41,9 +41,61 @@ k3sup install --cluster --k3s-extra-args '--disable traefik,servicelb,metrics-se
  --ip ${MASTER} --user ${USER} --merge --local-path $HOME/.kube/config \
  --context ${CLUSTER} --k3s-channel stable
 
-export KUBECONFIG=~/.kube/config
+```
 
+Just wait a bit and your cluster will be kicking up, at this point you just have the master
+
+```
+export KUBECONFIG=~/.kube/config
 kubectl config use-context ${CLUSTER}
 kubectl get node -o wide
 kubectl get all -n kube-system
+
+NAME               STATUS   ROLES                       AGE   VERSION        INTERNAL-IP     EXTERNAL-IP   OS-IMAGE                           KERNEL-VERSION   CONTAINER-RUNTIME
+okdo-raspberrypi   Ready    control-plane,etcd,master   13m   v1.25.4+k3s1   192.168.1.180   <none>        Raspbian GNU/Linux 11 (bullseye)   5.15.76-v8+      containerd://1.6.8-k3s1
+```
+
+### Join the nodes
+
+Repeat for node1 and node2
+
+```
+USER=celeghin
+MASTER=192.168.1.180
+NODE=192.168.1.183
+CLUSTER=k3s-cluster
+k3sup join --host ${NODE} --user ${USER} --server-host ${MASTER} --k3s-channel stable
+
+
+NAME               STATUS   ROLES                       AGE   VERSION        INTERNAL-IP     EXTERNAL-IP   OS-IMAGE                           KERNEL-VERSION      CONTAINER-RUNTIME
+minisforum-n4020   Ready    <none>                      14s   v1.25.4+k3s1   192.168.1.183   <none>        Ubuntu 22.04.1 LTS                 5.15.0-56-generic   containerd://1.6.8-k3s1
+nipogi-j4125       Ready    <none>                      46s   v1.25.4+k3s1   192.168.1.182   <none>        Ubuntu 20.04.5 LTS                 5.4.0-135-generic   containerd://1.6.8-k3s1
+okdo-raspberrypi   Ready    control-plane,etcd,master   16m   v1.25.4+k3s1   192.168.1.180   <none>        Raspbian GNU/Linux 11 (bullseye)   5.15.76-v8+         containerd://1.6.8-k3s1
+
+
+```
+
+## Install MetalLB Load Balancer
+
+https://metallb.universe.tf/
+
+```
+kubectl apply -f metallb-native-0.13.7.yaml
+kubectl get all -n metallb-system
+```
+
+Wait for until MetalLB is completed and create a pool of IPs, check metallb-pool.yaml:
+
+```
+kubectl apply -f metallb-pool.yaml
+```
+
+## Test MetalLB Load Balancer
+
+```
+kubectl create deployment nginx --image nginx
+kubectl expose deployment nginx --type LoadBalancer --port 80 --name nginx
+kubectl get service/mytest
+kubectl run jvminfo --image celeguim/jvminfo:latest
+kubectl expose pod/jvminfo --port 80 --target-port=8080 --type LoadBalancer
 ```
