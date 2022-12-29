@@ -1,0 +1,22 @@
+----- test MetalLB
+kubectl get all -n kube-system
+
+kubectl apply -f deploy.metallb.yaml
+
+apps k get all -o wide
+
+
+----- test nginx ingress
+/snap/bin/helm repo add ingress-nginx https://kubernetes.github.io/ingress-nginx
+
+/snap/bin/helm upgrade --install ingress-nginx ingress-nginx \
+  --repo https://kubernetes.github.io/ingress-nginx \
+  --namespace ingress-nginx --create-namespace
+
+kubectl get all -n kube-system
+
+kubectl apply -f deploy.ingress.yaml
+
+kubectl get all -n ingress-nginx
+
+kubectl exec -n ingress-nginx pod/ingress-nginx-controller-8574b6d7c9-wmq9p -- cat /etc/nginx/nginx.conf

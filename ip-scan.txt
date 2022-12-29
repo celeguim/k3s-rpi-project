@@ -1,0 +1,18 @@
+# ping broadcast to try to refresh arp cache
+ping 192.168.1.255
+
+$ arp -an | grep -v incomplete
+
+$ fping -a -g 192.168.1.0/24 ; arp -an | grep -v incomplete
+? (192.168.1.180) at e4:5f:1:b8:52:b0 on en0 ifscope [ethernet]
+? (192.168.1.182) at 68:1d:ef:28:e0:ab on en0 ifscope [ethernet]
+? (192.168.1.183) at 84:47:9:14:44:da on en0 ifscope [ethernet]
+
+$ nmap -sn '192.168.1.*'
+Nmap scan report for okdo-raspberrypi.home (192.168.1.180)
+Host is up (0.0021s latency).
+Nmap scan report for nipogi-j4125.home (192.168.1.182)
+Host is up (0.0062s latency).
+Nmap scan report for minisforum-n4020-1.home (192.168.1.183)
+Host is up (0.0032s latency).
+

@@ -1,0 +1,24 @@
+# master / ssh celeghin@192.168.1.180
+celeghin@OKDO-RASPBERRYPI
+    cpu: 4 (aarch64 / ARM / Cortex-A72 @ 1.80GHz)
+    mem: 4GB
+    eth0: 
+        inet 192.168.1.180/24
+        ether e4:5f:01:b8:52:b0
+
+# k3s-node1 / ssh celeghin@192.168.1.182 
+celeghin@NIPOGI-J4125
+    cpu: 4 (Intel(R) Celeron(R) J4125 CPU @ 2.00GHz)
+    mem: 6GB
+    enp1s0:
+        inet 192.168.1.182
+        ether 68:1d:ef:28:e0:ab
+
+# k3s-node2
+celeghin@MINISFORUM-N4020
+    cpu: 2 (Intel(R) Celeron(R) N4020 CPU @ 1.10GHz)
+    mem: 4GB
+    enp2s0: 
+        inet 192.168.1.183/24
+        ether 84:47:09:14:44:da
+

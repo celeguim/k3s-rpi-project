@@ -1,0 +1,36 @@
+-- Pre-Reqs
+# master hostname
+sudo hostnamectl set-hostname OKDO-RASPBERRYPI
+# node1 hostname
+sudo hostnamectl set-hostname NIPOGI-J4125
+# node2 hostname
+sudo hostnamectl set-hostname MINISFORUM-N4020
+
+apt install curl 
+
+sudo visudo
+celeghin  ALL=(ALL)  NOPASSWD:ALL
+
+# disable ipv6
+vi /etc/default/grub
+GRUB_CMDLINE_LINUX_DEFAULT="ipv6.disable=1"
+update-grub
+
+# disable ipv6 - raspberry
+sudo sed -i -e 's/$/ ipv6.disable=1/' /boot/cmdline.txt
+sudo reboot 
+
+# disable swap
+/etc/fstab
+
+ssh-copy-id celeghin@192.168.1.180
+ssh-copy-id celeghin@192.168.1.180
+ssh-copy-id celeghin@192.168.1.180
+
+brew install k3sup // or // curl -sLS https://get.k3sup.dev | sh k3sup /usr/local/bin/
+
+k3sup version
+
+# Kube Config on master
+/etc/rancher/k3s/k3s.yaml
+
