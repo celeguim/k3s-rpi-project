@@ -169,6 +169,7 @@ NGINX Ingress controller
 ```
 
 As you can see, now the cluster has an external load balancer 192.168.1.50
+
 ![](./images/nginx-ingress-controller.png)
 
 Don't forget to edit your /etc/hosts
@@ -191,3 +192,5 @@ According to the design you have the host ingress.nginx.example.com serving two 
 
 - /jvminfo (for jvminfo test2)
   ![](./images/ingress-test2.png)
+
+And that's it.
