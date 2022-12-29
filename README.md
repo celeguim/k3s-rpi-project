@@ -106,12 +106,17 @@ NAME         TYPE           CLUSTER-IP      EXTERNAL-IP     PORT(S)        AGE
 kubernetes   ClusterIP      10.43.0.1       <none>          443/TCP        35m
 nginx        LoadBalancer   10.43.155.102   192.168.1.148   80:31611/TCP   57s
 
-# The service was exposed with the first external IP in the pool
-
+# The test1 service was exposed with the first external IP in the pool
 
 ```
 
-![](images/metallb-nginx-test.png)
+<center>
+<figure>
+    <img src="images/metallb-test1.png" width="400" />
+    <figcaption>http://192.168.1.148/</figcaption>
+</figure>
+</center>
+
 <br>
 <br>
 
@@ -127,4 +132,15 @@ jvminfo      LoadBalancer   10.43.86.184    192.168.1.149   80:32494/TCP   27s
 kubernetes   ClusterIP      10.43.0.1       <none>          443/TCP        41m
 nginx        LoadBalancer   10.43.155.102   192.168.1.148   80:31611/TCP   7m15s
 
+# The test2 service was exposed with the second external IP in the pool
+
 ```
+
+<center>
+<figure>
+    <img src="images/metallb-test2.png" width="400" />
+    <figcaption>http://192.168.1.149/jvminfo/</figcaption>
+</figure>
+</center>
+<br>
+<br>
