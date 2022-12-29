@@ -8,9 +8,7 @@ The k3s cluster will have a load balancer (MetalLB) and ingress controller (NGIN
 
 Bare metal setup
 
-<center>
-    <img src="images/devices.png" width="400" />
-</center>
+<img src="images/devices.png" width="400" />
 <br>
 
 | role   |      ip       |   user   |           device | cpu | mem |        proc |
@@ -113,12 +111,8 @@ nginx        LoadBalancer   10.43.155.102   192.168.1.148   80:31611/TCP   57s
 
 ```
 
-<center>
-<figure>
-    <img src="images/metallb-test1.png" width="400" />
-    <figcaption>http://192.168.1.148/</figcaption>
-</figure>
-</center>
+http://192.168.1.148/
+<img src="images/metallb-test1.png" width="400" />
 <br>
 <br>
 
@@ -138,11 +132,7 @@ nginx        LoadBalancer   10.43.155.102   192.168.1.148   80:31611/TCP   7m15s
 
 ```
 
-<center>
-<figure>
-    <img src="images/metallb-test2.png" width="400" />
-    <figcaption>http://192.168.1.149/jvminfo/</figcaption>
-</figure>
-</center>
+http://192.168.1.149/jvminfo/
+<img src="images/metallb-test2.png" width="400" />
 <br>
 <br>
