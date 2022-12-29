@@ -112,8 +112,8 @@ nginx        LoadBalancer   10.43.155.102   192.168.1.148   80:31611/TCP   57s
 ```
 
 http://192.168.1.148/
+
 <img src="images/metallb-test1.png" width="400" />
-<br>
 <br>
 
 **Test2**
@@ -133,6 +133,63 @@ nginx        LoadBalancer   10.43.155.102   192.168.1.148   80:31611/TCP   7m15s
 ```
 
 http://192.168.1.149/jvminfo/
+
 <img src="images/metallb-test2.png" width="400" />
 <br>
-<br>
+
+## Install NGINX ingress controller
+
+```
+HELM_INSTALL_CMD="sudo /snap/bin/helm repo add ingress-nginx https://kubernetes.github.io/ingress-nginx ; \
+sudo cp /etc/rancher/k3s/k3s.yaml /root/.kube/config ; \
+sudo /snap/bin/helm upgrade --install ingress-nginx ingress-nginx \
+--repo https://kubernetes.github.io/ingress-nginx \
+--namespace ingress-nginx --create-namespace"
+
+ssh celeghin@192.168.1.180 ${HELM_INSTALL_CMD}
+
+# Watch for IP
+kubectl --namespace ingress-nginx get services -o wide -w ingress-nginx-controller
+
+# find running pod
+podname=$(kubectl get pods -n ingress-nginx -l app.kubernetes.io/name=ingress-nginx --field-selector=status.phase==Running -o jsonpath='{.items[0].metadata.name}')
+
+echo "Ingress Pod name: $podname"
+
+# invoke controller with version flag
+kubectl exec -it -n ingress-nginx $podname -- /nginx-ingress-controller --version
+
+-------------------------------------------------------------------------------
+NGINX Ingress controller
+  Release:       v1.5.1
+  Build:         d003aae913cc25f375deb74f898c7f3c65c06f05
+  Repository:    https://github.com/kubernetes/ingress-nginx
+  nginx version: nginx/1.21.6
+
+-------------------------------------------------------------------------------
+
+```
+
+As you can see, now the cluster has an external load balancer 192.168.1.50
+![](./images/nginx-ingress-controller.png)
+
+Don't forget to edit your /etc/hosts
+
+```
+$ grep ingress /etc/hosts
+192.168.1.150   ingress.nginx.example.com
+```
+
+## Test NGINX ingress controller
+
+```
+kubectl apply -f ./apps/deploy.ingress.yaml
+```
+
+According to the design you have the host ingress.nginx.example.com serving two entry points
+
+- / (for nginx test1)
+  ![](./images/ingress-test1.png)
+
+- /jvminfo (for jvminfo test2)
+  ![](./images/ingress-test2.png)
