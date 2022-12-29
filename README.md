@@ -8,7 +8,10 @@ The k3s cluster will have a load balancer (MetalLB) and ingress controller (NGIN
 
 Bare metal setup
 
-<center><img src="images/devices.png" width="400" /></center>
+<center>
+    <img src="images/devices.png" width="400" />
+</center>
+<br>
 
 | role   |      ip       |   user   |           device | cpu | mem |        proc |
 | :----- | :-----------: | :------: | ---------------: | :-: | :-: | ----------: |
@@ -95,7 +98,7 @@ kubectl apply -f metallb-pool.yaml
 
 ## Test MetalLB Load Balancer
 
-Test1
+**Test1**
 
 ```
 kubectl create deployment nginx --image nginx
@@ -116,11 +119,10 @@ nginx        LoadBalancer   10.43.155.102   192.168.1.148   80:31611/TCP   57s
     <figcaption>http://192.168.1.148/</figcaption>
 </figure>
 </center>
-
 <br>
 <br>
 
-Test2
+**Test2**
 
 ```
 kubectl run jvminfo --image celeguim/jvminfo:latest
