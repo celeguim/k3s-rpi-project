@@ -50,15 +50,9 @@ export KUBECONFIG=~/.kube/config
 kubectl config use-context ${CLUSTER}
 kubectl get node -o wide
 kubectl get all -n kube-system
-
-NAME               STATUS   ROLES                       AGE   VERSION        INTERNAL-IP     EXTERNAL-IP   OS-IMAGE                           KERNEL-VERSION   CONTAINER-RUNTIME
-okdo-raspberrypi   Ready    control-plane,etcd,master   13m   v1.25.4+k3s1   192.168.1.180   <none>        Raspbian GNU/Linux 11 (bullseye)   5.15.76-v8+      containerd://1.6.8-k3s1
 ```
 
-<img src="images/master.png"/>
-
 ![](images/master.png)
-
 <br>
 <br>
 
@@ -72,26 +66,28 @@ MASTER=192.168.1.180
 NODE=192.168.1.183
 CLUSTER=k3s-cluster
 k3sup join --host ${NODE} --user ${USER} --server-host ${MASTER} --k3s-channel stable
-
-
-NAME               STATUS   ROLES                       AGE   VERSION        INTERNAL-IP     EXTERNAL-IP   OS-IMAGE                           KERNEL-VERSION      CONTAINER-RUNTIME
-minisforum-n4020   Ready    <none>                      14s   v1.25.4+k3s1   192.168.1.183   <none>        Ubuntu 22.04.1 LTS                 5.15.0-56-generic   containerd://1.6.8-k3s1
-nipogi-j4125       Ready    <none>                      46s   v1.25.4+k3s1   192.168.1.182   <none>        Ubuntu 20.04.5 LTS                 5.4.0-135-generic   containerd://1.6.8-k3s1
-okdo-raspberrypi   Ready    control-plane,etcd,master   16m   v1.25.4+k3s1   192.168.1.180   <none>        Raspbian GNU/Linux 11 (bullseye)   5.15.76-v8+         containerd://1.6.8-k3s1
-
-
 ```
+
+![](images/all_nodes.png)
+<br>
+<br>
 
 ## Install MetalLB Load Balancer
 
 https://metallb.universe.tf/
+
+Current version: 0.13.7
 
 ```
 kubectl apply -f metallb-native-0.13.7.yaml
 kubectl get all -n metallb-system
 ```
 
-Wait for until MetalLB is completed and create a pool of IPs, check metallb-pool.yaml:
+Wait until MetalLB is completed (all resources) and create a pool of IPs (MetalLB needs a range of free IPs), check metallb-pool.yaml:
+
+![](images/metallb-install.png)
+<br>
+<br>
 
 ```
 kubectl apply -f metallb-pool.yaml
@@ -99,10 +95,36 @@ kubectl apply -f metallb-pool.yaml
 
 ## Test MetalLB Load Balancer
 
+Test1
+
 ```
 kubectl create deployment nginx --image nginx
 kubectl expose deployment nginx --type LoadBalancer --port 80 --name nginx
-kubectl get service/mytest
+
+kubectl get services
+NAME         TYPE           CLUSTER-IP      EXTERNAL-IP     PORT(S)        AGE
+kubernetes   ClusterIP      10.43.0.1       <none>          443/TCP        35m
+nginx        LoadBalancer   10.43.155.102   192.168.1.148   80:31611/TCP   57s
+
+# The service was exposed with the first external IP in the pool
+
+
+```
+
+![](images/metallb-nginx-test.png)
+<br>
+<br>
+
+Test2
+
+```
 kubectl run jvminfo --image celeguim/jvminfo:latest
 kubectl expose pod/jvminfo --port 80 --target-port=8080 --type LoadBalancer
+kubectl get services
+
+NAME         TYPE           CLUSTER-IP      EXTERNAL-IP     PORT(S)        AGE
+jvminfo      LoadBalancer   10.43.86.184    192.168.1.149   80:32494/TCP   27s
+kubernetes   ClusterIP      10.43.0.1       <none>          443/TCP        41m
+nginx        LoadBalancer   10.43.155.102   192.168.1.148   80:31611/TCP   7m15s
+
 ```
