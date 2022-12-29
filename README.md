@@ -1,7 +1,6 @@
 ## Goal
 
-Build a light-weight bare metal kubernetes cluster with k3sup / k3s
-https://github.com/alexellis/k3sup
+Build a light-weight bare metal kubernetes cluster with k3sup and k3s (https://github.com/alexellis/k3sup)
 
 The k3s cluster will have a load balancer (MetalLB) and ingress controller (NGINX) working together
 
@@ -9,7 +8,7 @@ The k3s cluster will have a load balancer (MetalLB) and ingress controller (NGIN
 
 Bare metal setup
 
-<img src="images/devices.png" alt="drawing" width="200"/>
+<img style="text-align: center; display: block;" src="images/devices.png" alt="drawing" width="400" />
 
 | role   |      ip       |   user   |           device | cpu | mem |        proc |
 | :----- | :-----------: | :------: | ---------------: | :-: | :-: | ----------: |
