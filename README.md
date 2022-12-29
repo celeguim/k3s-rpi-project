@@ -17,6 +17,12 @@ Bare metal setup
 | node1  | 192.168.1.182 | celeghin |     NIPOGI-J4125 |  4  | 6GB | intel j4125 |
 | node2  | 192.168.1.183 | celeghin | MINISFORUM-N4020 |  2  | 4GB | intel n4020 |
 
+## My Datacenter
+
+![](./images/datacenter1.jpg)
+
+![](./images/datacenter2.jpg)
+
 ## Pre-reqs
 
 [](./pre-reqs.txt)
