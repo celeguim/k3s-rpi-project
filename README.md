@@ -14,8 +14,8 @@ Bare metal setup
 | role   |      ip       |   user   |           device | cpu | mem |        proc |
 | :----- | :-----------: | :------: | ---------------: | :-: | :-: | ----------: |
 | master | 192.168.1.180 | celeghin | OKDO-RASPBERRYPI |  4  | 4GB | arm aarch64 |
-| node   | 192.168.1.182 | celeghin |     NIPOGI-J4125 |  4  | 6GB | intel j4125 |
-| node   | 192.168.1.183 | celeghin | MINISFORUM-N4020 |  2  | 4GB | intel n4020 |
+| node1  | 192.168.1.182 | celeghin |     NIPOGI-J4125 |  4  | 6GB | intel j4125 |
+| node2  | 192.168.1.183 | celeghin | MINISFORUM-N4020 |  2  | 4GB | intel n4020 |
 
 ## Pre-reqs
 
@@ -29,7 +29,7 @@ Bare metal setup
 
 ## K3s installation
 
-### create master
+### Install master
 
 As we don't want to have the default integrated traefik, but instead we want to have MetalLB as load balancer and NGINX as ingress controller, so we must disable it on the installation, like:
 
@@ -112,8 +112,7 @@ nginx        LoadBalancer   10.43.155.102   192.168.1.148   80:31611/TCP   57s
 ```
 
 http://192.168.1.148/
-
-<img src="images/metallb-test1.png" width="400" />
+![](images/metallb-test1.png)
 <br>
 
 **Test2**
@@ -133,8 +132,7 @@ nginx        LoadBalancer   10.43.155.102   192.168.1.148   80:31611/TCP   7m15s
 ```
 
 http://192.168.1.149/jvminfo/
-
-<img src="images/metallb-test2.png" width="400" />
+![](images/metallb-test2.png)
 <br>
 
 ## Install NGINX ingress controller
