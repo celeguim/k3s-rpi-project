@@ -19,9 +19,17 @@ Bare metal setup
 
 ## My Datacenter
 
-![](./images/datacenter1.jpg)
+The router
 
-![](./images/datacenter2.jpg)
+<img src="images/datacenter1.jpg" width="500" />
+<br>
+<br>
+
+The braves
+
+<img src="images/datacenter2.jpg" width="500" />
+<br>
+<br>
 
 ## Pre-reqs
 
