@@ -8,7 +8,7 @@ The k3s cluster will have a load balancer (MetalLB) and ingress controller (NGIN
 
 Bare metal setup
 
-<center><img style="text-align:center;display:block;" src="images/devices.png" width="400" /></center>
+<center><img src="images/devices.png" width="400" /></center>
 
 | role   |      ip       |   user   |           device | cpu | mem |        proc |
 | :----- | :-----------: | :------: | ---------------: | :-: | :-: | ----------: |
@@ -54,6 +54,13 @@ kubectl get all -n kube-system
 NAME               STATUS   ROLES                       AGE   VERSION        INTERNAL-IP     EXTERNAL-IP   OS-IMAGE                           KERNEL-VERSION   CONTAINER-RUNTIME
 okdo-raspberrypi   Ready    control-plane,etcd,master   13m   v1.25.4+k3s1   192.168.1.180   <none>        Raspbian GNU/Linux 11 (bullseye)   5.15.76-v8+      containerd://1.6.8-k3s1
 ```
+
+<img src="images/master.png"/>
+
+![](images/master.png)
+
+<br>
+<br>
 
 ### Join the nodes
 
