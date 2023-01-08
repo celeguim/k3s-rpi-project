@@ -16,7 +16,8 @@ USER=celeghin
 MASTER=192.168.1.180
 CLUSTER=k3s-cluster
 
-k3sup install --cluster --k3s-extra-args '--disable traefik,servicelb,metrics-server' \
+# ,metrics-server
+k3sup install --cluster --k3s-extra-args '--disable traefik,servicelb' \
   --ip ${MASTER} --user ${USER} --merge --local-path $HOME/.kube/config \
   --context ${CLUSTER} --k3s-channel stable
 
@@ -29,7 +30,7 @@ kubectl get all -n kube-system
 ----- Join nodes
 USER=celeghin
 MASTER=192.168.1.180
-NODE=192.168.1.183
+NODE=192.168.1.182
 CLUSTER=k3s-cluster
 k3sup join --host ${NODE} --user ${USER} --server-host ${MASTER} --k3s-channel stable
 
@@ -60,6 +61,11 @@ kubectl run jvminfo --image celeguim/jvminfo:latest
 
 kubectl expose pod/jvminfo --port 80 --target-port=8080 --type LoadBalancer
 
+kubectl create deployment jvminfo --image celeguim/jvminfo:latest --replicas 3
+
+kubectl expose deployment jvminfo --type LoadBalancer --port 80 --name jvminfo
+
+kubectl create deployment jvminfo --image celeguim/jvminfo:arm64v8 --replicas 3
 
 
 ------ Install nginx ingress controller 
@@ -91,3 +97,19 @@ kubectl exec -it -n $ingress_ns $podname -- /nginx-ingress-controller --version
 deploy.ingress.yaml
 
 kubectl exec -n ingress-nginx pod/ingress-nginx-controller-8574b6d7c9-wmq9p -- cat /etc/nginx/nginx.conf
+
+----- Prometheus install
+/snap/bin/helm repo add prometheus-community https://prometheus-community.github.io/helm-charts
+
+/snap/bin/helm repo update
+
+/snap/bin/helm install prometheus prometheus-community/prometheus
+
+kubectl expose service prometheus-server --type=LoadBalancer --target-port=9090 --name=prometheus-server-ext
+
+
+----- Grafana install
+/snap/bin/helm repo add grafana https://grafana.github.io/helm-charts
+
+/snap/bin/helm install grafana grafana/grafana
+
