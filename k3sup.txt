@@ -128,3 +128,10 @@ kubectl expose service prometheus-server --type=LoadBalancer --target-port=9090 
 
 /snap/bin/helm install grafana grafana/grafana
 
+kubectl expose service grafana --type=LoadBalancer --target-port=3000 --name=grafana-ext
+
+kubectl get secret --namespace default grafana -o yaml
+
+echo "YWRtaW4=" | openssl base64 -d ; echo
+
+echo "blFZMmYxUkIxRkdvMFVMN1V3ZXMydURsT1Q4ODFsWElZcGRpcExXNg==" | openssl base64 -d ; echo
