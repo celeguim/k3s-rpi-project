@@ -73,9 +73,15 @@ kubectl get all -n kube-system
 
 ### Join the nodes
 
-Repeat for node1 and node2
-
 ```
+# Join node1
+USER=celeghin
+MASTER=192.168.1.180
+NODE=192.168.1.182
+CLUSTER=k3s-cluster
+k3sup join --host ${NODE} --user ${USER} --server-host ${MASTER} --k3s-channel stable
+
+# Join node2
 USER=celeghin
 MASTER=192.168.1.180
 NODE=192.168.1.183
@@ -91,10 +97,13 @@ k3sup join --host ${NODE} --user ${USER} --server-host ${MASTER} --k3s-channel s
 
 https://metallb.universe.tf/
 
-Current version: 0.13.7
+~~Current version: 0.13.7~~
+
+Current version: 0.13.12
 
 ```
-kubectl apply -f metallb-native-0.13.7.yaml
+# kubectl apply -f metallb-native-0.13.7.yaml
+kubectl apply -f metallb-native-0.13.12.yaml
 kubectl get all -n metallb-system
 ```
 
@@ -202,9 +211,18 @@ kubectl apply -f ./apps/deploy.ingress.yaml
 According to the design you have the host ingress.nginx.example.com serving two entry points
 
 - / (for nginx test1)
+- http://ingress.nginx.example.com/
   ![](./images/ingress-test1.png)
 
 - /jvminfo (for jvminfo test2)
+- http://ingress.nginx.example.com/jvminfo/
   ![](./images/ingress-test2.png)
 
-And that's it.
+## Uninstall
+``` 
+ssh celeghin@192.168.1.180 /usr/local/bin/k3s-uninstall.sh; rm -rf /var/lib/rancher/; rm -rf /etc/rancher/;
+ssh celeghin@192.168.1.182 /usr/local/bin/k3s-agent-uninstall.sh; rm -rf /var/lib/rancher/; rm -rf /etc/rancher/;
+ssh celeghin@192.168.1.183 /usr/local/bin/k3s-agent-uninstall.sh; rm -rf /var/lib/rancher/; rm -rf /etc/rancher/;
+```
+
+That's it.

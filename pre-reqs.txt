@@ -29,7 +29,8 @@ ssh-copy-id celeghin@192.168.1.180
 
 brew install k3sup // or // curl -sLS https://get.k3sup.dev | sh k3sup /usr/local/bin/
 
-k3sup version
+$ k3sup version
+Version: 0.13.1
 
 # Kube Config on master
 /etc/rancher/k3s/k3s.yaml
