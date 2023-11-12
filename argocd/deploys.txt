@@ -1,0 +1,21 @@
+
+kubectl create deployment jvminfo --image celeguim/jvminfo:latest --replicas 2 --dry-run=client -o yaml >jvminfo.deploy.yaml
+
+kubectl expose deployment/jvminfo --type LoadBalancer --port 80 --target-port 8080 --name jvminfo --dry-run=client -o yaml >jvminfo.service.yaml
+
+# Expose ArgoCD server
+kubectl expose svc/argocd-server  --type LoadBalancer --port 80 --target-port 80 --name argocd-server -n argocd
+
+# Patch argocd-server to LoadBalancer
+kubectl edit svc/argocd-server -n argocd
+ou
+kubectl patch svc argocd-server -n argocd -p '{"spec": {"type": "LoadBalancer"}}'
+
+# Initial password
+argocd admin initial-password -n argocd
+jbkIn06fcqFNVpxd
+
+ou
+
+$ kubectl -n argocd get secret argocd-initial-admin-secret -o jsonpath="{.data.password}" | base64 -d
+jbkIn06fcqFNVpxd
