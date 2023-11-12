@@ -1,7 +1,6 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  creationTimestamp: null
   labels:
     app: jvminfo
   name: jvminfo
@@ -10,15 +9,20 @@ spec:
   selector:
     matchLabels:
       app: jvminfo
-  strategy: {}
   template:
     metadata:
-      creationTimestamp: null
       labels:
         app: jvminfo
     spec:
       containers:
       - image: celeguim/jvminfo:latest
         name: jvminfo
-        resources: {}
-status: {}
+      affinity:
+        nodeAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            nodeSelectorTerms:
+            - matchExpressions:
+              - key: kubernetes.io/arch
+                operator: In
+                values:
+                - amd64
