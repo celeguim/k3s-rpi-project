@@ -117,6 +117,12 @@ Wait until MetalLB is completed (all resources) and create a pool of IPs (MetalL
 kubectl apply -f metallb-pool.yaml
 ```
 
+## Do no schedule pods on our Master/ARM
+
+```
+kubectl taint nodes minisforum-n4020 arch=arm64:NoSchedule
+```
+
 ## Test MetalLB Load Balancer
 
 **Test1**
@@ -219,7 +225,8 @@ According to the design you have the host ingress.nginx.example.com serving two 
   ![](./images/ingress-test2.png)
 
 ## Uninstall
-``` 
+
+```
 ssh celeghin@192.168.1.180 /usr/local/bin/k3s-uninstall.sh; rm -rf /var/lib/rancher/; rm -rf /etc/rancher/;
 ssh celeghin@192.168.1.182 /usr/local/bin/k3s-agent-uninstall.sh; rm -rf /var/lib/rancher/; rm -rf /etc/rancher/;
 ssh celeghin@192.168.1.183 /usr/local/bin/k3s-agent-uninstall.sh; rm -rf /var/lib/rancher/; rm -rf /etc/rancher/;
