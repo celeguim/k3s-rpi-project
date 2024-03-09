@@ -48,16 +48,24 @@ kubectl get node -o wide
 ----- Join nodes
 USER=celeghin
 MASTER=192.168.1.180
+NODE=192.168.1.182
+CLUSTER=k3s-cluster
+k3sup join --host ${NODE} --user ${USER} --server-host ${MASTER} --k3s-channel stable
+
+USER=celeghin
+MASTER=192.168.1.180
 NODE=192.168.1.183
 CLUSTER=k3s-cluster
 k3sup join --host ${NODE} --user ${USER} --server-host ${MASTER} --k3s-channel stable
 
 
-
 ----- Install Load Balancer MetalLB
 https://metallb.universe.tf/
 
-kubectl apply -f metallb-native-0.13.7.yaml
+# kubectl apply -f metallb-native-0.13.7.yaml
+
+# update
+kubectl apply -f metallb-native-0.14.3.yaml
 
 kubectl get all -n metallb-system
 
@@ -70,10 +78,6 @@ kubectl apply -f metallb-pool.yaml
 kubectl create deployment nginx --image nginx
 
 kubectl expose deployment nginx --type LoadBalancer --port 80 --name nginx
-
-sudo systemctl restart k3s
-
-kubectl get service/mytest
 
 kubectl run jvminfo --image celeguim/jvminfo:latest
 

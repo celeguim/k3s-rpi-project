@@ -1,0 +1,8 @@
+Updated SO
+master: Linux Raspbian GNU/Linux 11 Bullseye - 6.1.21-v8+
+node1: Linux Ubuntu 20.04.6 LTS - 5.4.0-173-generic
+node2: Linux Ubuntu 22.04.04 LTS - 5.15.0-100-generic
+
+Update k8s
+Using v1.28.7+k3s1 as release
+
