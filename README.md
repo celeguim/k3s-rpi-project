@@ -52,7 +52,7 @@ USER=celeghin
 MASTER=192.168.1.180
 CLUSTER=k3s-cluster
 
-k3sup install --cluster --k3s-extra-args '--disable traefik,servicelb,metrics-server' \
+k3sup install --cluster --k3s-extra-args '--disable traefik,servicelb' \
  --ip ${MASTER} --user ${USER} --merge --local-path $HOME/.kube/config \
  --context ${CLUSTER} --k3s-channel stable
 
@@ -99,11 +99,15 @@ https://metallb.universe.tf/
 
 ~~Current version: 0.13.7~~
 
-Current version: 0.13.12
+~~Current version: 0.13.12~~
+
+Current version: 0.14.8
 
 ```
 kubectl apply -f metallb-native-0.13.7.yaml
 kubectl apply -f metallb-native-0.13.12.yaml
+kubectl apply -f metallb-native-0.14.8.yaml
+
 kubectl get all -n metallb-system
 ```
 
@@ -118,6 +122,16 @@ kubectl apply -f metallb-pool.yaml
 ```
 
 ## Test MetalLB Load Balancer
+
+**Taint Master Node**
+```
+taint:
+kubectl taint nodes raspberry node-role.kubernetes.io/master=:NoSchedule
+
+remove:
+kubectl taint nodes raspberry node-role.kubernetes.io/master=:NoSchedule-
+
+```
 
 **Test1**
 
@@ -138,10 +152,11 @@ http://192.168.1.148/
 ![](images/metallb-test1.png)
 <br>
 
+
 **Test2**
 
 ```
-kubectl run jvminfo --image celeguim/jvminfo:latest
+kubectl run jvminfo --image celeguim/jvminfo:v3
 kubectl expose pod/jvminfo --port 80 --target-port=8080 --type LoadBalancer
 kubectl get services
 
