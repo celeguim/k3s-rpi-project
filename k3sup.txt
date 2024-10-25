@@ -24,7 +24,7 @@ k3sup install --skip-install --ip ${MASTER} --user ${USER} \
   --context ${CLUSTER} 
 
 
------- Restart
+------ Restart k3s
 ssh celeghin@192.168.1.180 sudo systemctl restart k3s
 ssh celeghin@192.168.1.182 sudo systemctl restart k3s-agent
 ssh celeghin@192.168.1.183 sudo systemctl restart k3s-agent
@@ -48,7 +48,7 @@ kubectl get node -o wide
 ----- Join nodes
 USER=celeghin
 MASTER=192.168.1.180
-NODE=192.168.1.183
+NODE=192.168.1.182
 CLUSTER=k3s-cluster
 k3sup join --host ${NODE} --user ${USER} --server-host ${MASTER} --k3s-channel stable
 
