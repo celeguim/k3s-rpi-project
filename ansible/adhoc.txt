@@ -18,3 +18,4 @@ ANSIBLE_CONFIG=ansible.cfg ansible-playbook -i inventory.yaml apache2.yaml --lim
 # configurar rede estatica
 ANSIBLE_CONFIG=ansible.cfg ansible-playbook -i inventory.yaml playbooks/netplan.yaml --limit minisforum --become -vvv
 ANSIBLE_CONFIG=ansible.cfg ansible-playbook -i inventory.yaml playbooks/netplan.yaml --limit nipogi --become -vvv
+ANSIBLE_CONFIG=ansible.cfg ansible-playbook -i inventory.yaml playbooks/netplan.yaml --limit raspberry --become -vvv
