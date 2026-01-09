@@ -1,6 +1,6 @@
 ---
 - name: Configurar IP Fixo
-  hosts: minisforum
+  hosts: all
   become: yes
   tasks:
     - name: Aplicar configuracao de rede estatica via Netplan
@@ -31,7 +31,8 @@
 
     - name: permissoes de leitura para root
       ansible.builtin.file:
-        path: /etc/netplan
+        path: /etc/netplan/
+        recurse: yes
         owner: root
         group: root
         mode: '0600'

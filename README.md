@@ -11,11 +11,11 @@ Bare metal setup
 <img src="images/devices.png" width="400" />
 <br>
 
-| role   |      ip       |   user   |           device | cpu | mem |        proc |
-| :----- | :-----------: | :------: | ---------------: | :-: | :-: | ----------: |
-| master | 192.168.1.180 | celeghin | OKDO-RASPBERRYPI |  4  | 4GB | arm aarch64 |
-| node1  | 192.168.1.182 | celeghin |     NIPOGI-J4125 |  4  | 6GB | intel j4125 |
-| node2  | 192.168.1.183 | celeghin | MINISFORUM-N4020 |  2  | 4GB | intel n4020 |
+| role   |      ip       | mcaddress          |   user   |           device | cpu | mem |        arch |
+| :----- |:-------------:|--------------------| :------: | ---------------: | :-: | :-: |------------:|
+| master | 192.168.3.180 |                    | celeghin | OKDO-RASPBERRYPI |  4  | 4GB | arm aarch64 |
+| node1  | 192.168.3.236 | 68:1d:ef:28:e0:ab  | celeghin |     NIPOGI-J4125 |  4  | 6GB | intel j4125 |
+| node2  | 192.168.3.145 | 84-47-09-14-44-da  | celeghin | MINISFORUM-N4020 |  2  | 4GB | intel n4020 |
 
 ## My Datacenter
 
