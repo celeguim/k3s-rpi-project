@@ -1,0 +1,30 @@
+---
+- name: Install and configure Apache
+  hosts: minisforum
+  become: true
+
+  tasks:
+    - name: Install Apache
+      ansible.builtin.apt:
+        name: apache2
+        state: present
+
+    - name: Start Apache service
+      ansible.builtin.service:
+        name: apache2
+        state: started
+        enabled: yes
+
+    - name: Configure Apache
+      ansible.builtin.template:
+        src: index.html.j2
+        dest: /var/www/html/index.html
+      notify: Restart Apache
+
+  handlers:
+    - name: Restart Apache
+      ansible.builtin.service:
+        name: apache2
+        state: restarted
+        enabled: yes
+        daemon_reload: yes

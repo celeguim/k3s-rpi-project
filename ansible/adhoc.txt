@@ -1,0 +1,19 @@
+# ping all
+ANSIBLE_CONFIG=ansible.cfg ansible all -m ping -i inventory.yaml
+
+# check date/time
+ANSIBLE_CONFIG=ansible.cfg ansible all -i inventory.yaml -m ansible.builtin.shell --args 'hostname; date; df -kh'
+
+# yum update / root
+ANSIBLE_CONFIG=ansible.cfg ansible all -i inventory.yaml -m ansible.builtin.shell --args 'apt update' --become
+ANSIBLE_CONFIG=ansible.cfg ansible minisforum -i inventory.yaml -m ansible.builtin.shell --args 'apt update' --become
+
+# service status / root
+ANSIBLE_CONFIG=ansible.cfg ansible server3 -i inventory.yaml -m ansible.builtin.service --args 'name=httpd state=started' --become
+ANSIBLE_CONFIG=ansible.cfg ansible minisforum -i inventory.yaml -m ansible.builtin.shell --args 'systemctl status apache2'
+
+# install/configure apache
+ANSIBLE_CONFIG=ansible.cfg ansible-playbook -i inventory.yaml apache2.yaml --limit minisforum
+
+# configurar rede estatica
+ANSIBLE_CONFIG=ansible.cfg ansible-playbook -i inventory.yaml playbooks/netplan.yaml --limit minisforum --become -vvv

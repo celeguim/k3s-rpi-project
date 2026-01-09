@@ -1,0 +1,41 @@
+---
+- name: Configurar IP Fixo
+  hosts: minisforum
+  become: yes
+  tasks:
+    - name: Aplicar configuracao de rede estatica via Netplan
+      ansible.builtin.copy:
+        owner: root
+        group: root
+        mode: 0600
+        dest: /etc/netplan/05-ansible.yaml
+        content: |
+          network:
+            version: 2
+            renderer: NetworkManager
+            ethernets:
+              enp2s0:
+                dhcp4: no
+                addresses:
+                  - 192.168.3.145/24
+                routes:
+                  - to: default
+                    via: 192.168.3.1
+                nameservers:
+                  addresses:
+                    - 8.8.8.8
+                    - 1.1.1.1          
+                    - 127.0.0.53
+                    - 192.168.3.1
+      register: netplan_config
+
+    - name: permissoes de leitura para root
+      ansible.builtin.file:
+        path: /etc/netplan
+        owner: root
+        group: root
+        mode: '0600'
+
+    - name: Aplicar alteracoes do Netplan
+      command: netplan apply
+      when: netplan_config.changed

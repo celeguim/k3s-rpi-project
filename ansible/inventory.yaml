@@ -1,0 +1,11 @@
+all:
+  hosts:
+    raspberry:
+      ansible_host: 192.168.1.180
+      ansible_user: celeghin
+    nipogi:
+      ansible_host: 192.168.1.182
+      ansible_user: celeghin
+    minisforum:
+      ansible_host: 192.168.3.145
+      ansible_user: celeghin
