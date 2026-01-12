@@ -101,12 +101,15 @@ https://metallb.universe.tf/
 
 ~~Current version: 0.13.12~~
 
-Current version: 0.14.8
+~~Current version: 0.14.8~~
+
+Current version: 0.15.3
 
 ```
 kubectl apply -f metallb-native-0.13.7.yaml
 kubectl apply -f metallb-native-0.13.12.yaml
 kubectl apply -f metallb-native-0.14.8.yaml
+kubectl apply -f metallb-native-0.15.3.yaml
 
 kubectl get all -n metallb-system
 ```
