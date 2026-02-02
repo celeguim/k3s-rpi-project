@@ -1,0 +1,86 @@
+# iLo: connect
+# 192.168.3.11
+$ ssh -o KexAlgorithms=+diffie-hellman-group14-sha1     -o HostKeyAlgorithms=+ssh-rsa     Administrator@192.168.3.11
+User: Administrator
+Senha: (a etiqueta física do servidor)
+
+# show users
+</>hpiLO-> show map1/accounts1/
+/map1/accounts1
+  Targets
+    Administrator
+    celeghin
+
+# change pass
+</>hpiLO-> cd map1/accounts1/celeghin
+set password=<my-strong-password>
+
+# update failed
+Error: Failed to fetch https://enterprise.proxmox.com/debian/ceph-squid/dists/trixie/InRelease  401  Unauthorized [IP: 170.130.165.90 443]
+Error: The repository 'https://enterprise.proxmox.com/debian/ceph-squid trixie InRelease' is not signed.
+
+# comentar os componentes
+vi /etc/apt/sources.list.d/ceph.sources
+#URIs: https://enterprise.proxmox.com/debian/ceph-squid
+URIs: https://download.proxmox.com/debian/ceph-squid
+#Components: enterprise
+Components: no-subscription
+
+# apagar os arquivos
+rm /etc/apt/sources.list.d/pve-enterprise.sources
+rm /etc/apt/sources.list.d/ceph-enterprise.sources 2>/dev/null
+
+# erro cert  no apt update
+40 packages can be upgraded. Run 'apt list --upgradable' to see them.
+Warning: Failed to fetch https://download.proxmox.com/debian/ceph-squid/dists/trixie/InRelease  SSL connection failed: error:0A000086:SSL routines::certificate verify failed / Success [IP: 170.130.165.90 443]
+
+apt install --reinstall ca-certificates openssl -y
+update-ca-certificates
+
+apt download ca-certificates
+dpkg -i ca-certificates_*.deb
+update-ca-certificates
+
+apt upgrade (ira atualizar os certs + openssl)
+apt update
+
+# template do rocky linux
+cd /var/lib/vz/template/iso
+wget https://download.rockylinux.org/pub/rocky/9/images/x86_64/Rocky-9-GenericCloud.latest.x86_64.qcow2
+
+# cria template
+qm create 9001 \
+  --name tpl-rocky-9 \
+  --memory 2048 \
+  --cores 2 \
+  --cpu host \
+  --net0 virtio,bridge=vmbr0
+
+# importa o disco
+qm importdisk 9001 Rocky-9-GenericCloud.latest.x86_64.qcow2 local-lvm
+
+# Configurar disco e boot
+qm set 9001 --scsihw virtio-scsi-pci
+qm set 9001 --scsi0 local-lvm:vm-9001-disk-0
+qm set 9001 --boot order=scsi0
+qm set 9001 --serial0 socket
+qm set 9001 --vga serial0
+
+# cloud-init
+qm set 9001 --ide2 local-lvm:cloudinit
+qm set 9001 --ipconfig0 ip=dhcp
+qm set 9001 --ciuser proxmox
+qm set 9001 --sshkeys ~/.ssh/id_rsa.pub
+
+# converte em template
+qm template 9001
+
+# Criar VM a partir do template (teste rápido)
+qm clone 9001 101 --name rocky-test-01
+qm start 101
+
+# instalar o qemu-guest-agent (para IP e mais)
+sudo dnf install -y qemu-guest-agent
+sudo systemctl enable --now qemu-guest-agent
+
+
