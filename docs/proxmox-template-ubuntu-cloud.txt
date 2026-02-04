@@ -1,0 +1,98 @@
+# template do Jammy = Ubuntu 22.04 LTS (super estável)
+cd /var/lib/vz/template/iso
+wget https://cloud-images.ubuntu.com/jammy/current/jammy-server-cloudimg-amd64.img
+
+# cria template
+qm create 9010 \
+  --name tpl-ubuntu-22-lts \
+  --memory 6144 \
+  --cores 8 \
+  --cpu host \
+  --net0 virtio,bridge=vmbr0
+
+# importa o disco
+qm importdisk 9010 jammy-server-cloudimg-amd64.img local-lvm
+
+# Configurar disco e boot
+qm set 9010 --scsihw virtio-scsi-pci
+qm set 9010 --scsi0 local-lvm:vm-9010-disk-0
+qm set 9010 --boot order=scsi0
+qm set 9010 --serial0 socket
+qm set 9010 --vga serial0
+
+# resize do disco
+qm resize 9010 scsi0 40G
+
+# snippet de inicializacao do ubuntu
+mkdir -p /var/lib/vz/snippets
+nano /var/lib/vz/snippets/ubuntu-userdata.yaml
+
+#cloud-config
+users:
+  - name: admin
+    groups: sudo
+    shell: /bin/bash
+    sudo: ALL=(ALL) NOPASSWD:ALL
+    lock_passwd: false
+    passwd: $6$SEU_HASH_AQUI
+
+ssh_pwauth: true
+
+packages:
+  - qemu-guest-agent
+  - cloud-guest-utils
+
+runcmd:
+  - systemctl enable qemu-guest-agent
+  - growpart /dev/sda 1
+  - resize2fs /dev/sda1
+
+# cloud-init (usuario/senha)
+openssl passwd -6
+user: admin/admin
+
+# setar o snippet no cloud-init
+# qm set 9010 --ide2 local-lvm:cloudinit (errado)
+# emular cd-rom
+qm set 9010 --scsi1 local-lvm:cloudinit
+qm set 9010 --cicustom "user=local:snippets/ubuntu-userdata.yaml"
+qm set 9010 --ipconfig0 ip=dhcp
+qm set 9010 --agent enabled=1
+
+# instalar guest agent
+qm start 9010
+
+# aguardar 1min no primeiro boot
+
+# acessar na console proxmox
+admin/admin
+
+# instalar dependencias
+sudo apt update
+sudo apt install -y qemu-guest-agent
+sudo systemctl enable --now qemu-guest-agent
+
+# power off
+sudo poweroff
+
+
+# definir init corretamente
+qm set 9010 \
+  --ciuser admin \
+  --cipassword '$6$HASH_AQUI' \
+  --ipconfig0 ip=dhcp
+
+qm set 9010 --ciupgrade 0
+
+# converte em template
+qm template 9010
+
+# Criar VM a partir do template (teste rápido)
+qm clone 9001 101 --name rocky-test-01
+qm start 101
+
+# instalar o qemu-guest-agent (para IP e mais)
+sudo dnf install -y qemu-guest-agent
+sudo systemctl enable --now qemu-guest-agent
+
+

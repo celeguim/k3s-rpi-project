@@ -1,0 +1,21 @@
+cd /var/lib/vz/template/iso
+wget https://releases.ubuntu.com/22.04/ubuntu-22.04.5-live-server-amd64.iso
+
+qm create 9030 \
+  --name tpl-ubuntu-22-lts \
+  --memory 6144 \
+  --cores 8 \
+  --cpu host \
+  --net0 virtio,bridge=vmbr0
+
+qm set 9030 --scsihw virtio-scsi-pci
+qm set 9030 --scsi0 local-lvm:40
+qm set 9030 --ide2 local:iso/ubuntu-22.04.5-live-server-amd64.iso,media=cdrom
+qm set 9030 --boot order=ide2
+
+qm start 9030
+
+depois de instalador ajustar boot-order
+qm set 9030 --boot order=scsi0
+qm set 9030 --ide2 none
+

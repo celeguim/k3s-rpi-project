@@ -1,0 +1,40 @@
+# template do rocky linux
+cd /var/lib/vz/template/iso
+wget https://download.rockylinux.org/pub/rocky/9/images/x86_64/Rocky-9-GenericCloud.latest.x86_64.qcow2
+
+# cria template
+qm create 9001 \
+  --name tpl-rocky-9 \
+  --memory 2048 \
+  --cores 2 \
+  --cpu host \
+  --net0 virtio,bridge=vmbr0
+
+# importa o disco
+qm importdisk 9001 Rocky-9-GenericCloud.latest.x86_64.qcow2 local-lvm
+
+# Configurar disco e boot
+qm set 9001 --scsihw virtio-scsi-pci
+qm set 9001 --scsi0 local-lvm:vm-9001-disk-0
+qm set 9001 --boot order=scsi0
+qm set 9001 --serial0 socket
+qm set 9001 --vga serial0
+
+# cloud-init
+qm set 9001 --ide2 local-lvm:cloudinit
+qm set 9001 --ipconfig0 ip=dhcp
+qm set 9001 --ciuser proxmox
+qm set 9001 --sshkeys ~/.ssh/id_rsa.pub
+
+# converte em template
+qm template 9001
+
+# Criar VM a partir do template (teste rápido)
+qm clone 9001 101 --name rocky-test-01
+qm start 101
+
+# instalar o qemu-guest-agent (para IP e mais)
+sudo dnf install -y qemu-guest-agent
+sudo systemctl enable --now qemu-guest-agent
+
+
